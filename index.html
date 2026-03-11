@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Trending Books</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+font-family:"Noto Serif JP",serif;
+background:#0f0f0f;
+color:white;
+padding:30px;
+}
+
+.title{
+font-size:28px;
+text-align:center;
+margin-bottom:30px;
+letter-spacing:2px;
+color:#f5e6c8;
+}
+
+.rank-list{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+gap:24px;
+}
+
+.book{
+background:#1a1a1a;
+border-radius:12px;
+padding:12px;
+text-align:center;
+transition:transform .3s;
+}
+
+.book:hover{
+transform:translateY(-5px);
+}
+
+.rank{
+font-size:14px;
+color:#f5e6c8;
+margin-bottom:6px;
+}
+
+.book img{
+width:100%;
+height:180px;
+object-fit:contain;
+border-radius:6px;
+background:white;
+}
+
+.book-title{
+font-size:13px;
+margin-top:8px;
+height:38px;
+overflow:hidden;
+}
+
+.author{
+font-size:11px;
+color:#aaa;
+margin-top:4px;
+}
+
+.btn{
+display:inline-block;
+margin-top:8px;
+padding:5px 12px;
+font-size:12px;
+background:#5a4632;
+border-radius:20px;
+text-decoration:none;
+color:white;
+}
+
+.btn:hover{
+background:#7b6249;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="title">📈 今話題の本</div>
+
+<div class="rank-list" id="ranking"></div>
+
+<script>
+
+const url="https://www.googleapis.com/books/v1/volumes?q=subject:fiction&langRestrict=ja&orderBy=relevance&maxResults=10"
+
+fetch(url)
+.then(res=>res.json())
+.then(data=>{
+
+const container=document.getElementById("ranking")
+
+data.items.forEach((item,i)=>{
+
+const book=item.volumeInfo
+
+const img=book.imageLinks?.thumbnail || ""
+
+const div=document.createElement("div")
+div.className="book"
+
+div.innerHTML=`
+
+<div class="rank">${i+1}位</div>
+
+<img src="${img}">
+
+<div class="book-title">${book.title}</div>
+
+<div class="author">${book.authors ? book.authors.join(", ") : ""}</div>
+
+<a class="btn" href="${item.volumeInfo.infoLink}" target="_blank">
+詳細
+</a>
+
+`
+
+container.appendChild(div)
+
+})
+
+})
+
+</script>
+
+</body>
+</html>
