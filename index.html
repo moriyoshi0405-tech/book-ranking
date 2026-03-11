@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Trending Books</title>
+<title>売れている本ランキング</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
 
@@ -12,9 +12,9 @@
 
 body{
 margin:0;
-font-family:"Noto Serif JP",serif;
 background:#0f0f0f;
 color:white;
+font-family:"Noto Serif JP",serif;
 padding:30px;
 }
 
@@ -26,16 +26,16 @@ letter-spacing:2px;
 color:#f5e6c8;
 }
 
-.rank-list{
+.grid{
 display:grid;
-grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
 gap:24px;
 }
 
 .book{
 background:#1a1a1a;
-border-radius:12px;
 padding:12px;
+border-radius:12px;
 text-align:center;
 transition:transform .3s;
 }
@@ -52,16 +52,16 @@ margin-bottom:6px;
 
 .book img{
 width:100%;
-height:180px;
+height:200px;
 object-fit:contain;
-border-radius:6px;
 background:white;
+border-radius:6px;
 }
 
-.book-title{
+.name{
 font-size:13px;
 margin-top:8px;
-height:38px;
+height:36px;
 overflow:hidden;
 }
 
@@ -74,12 +74,12 @@ margin-top:4px;
 .btn{
 display:inline-block;
 margin-top:8px;
-padding:5px 12px;
-font-size:12px;
+padding:6px 12px;
 background:#5a4632;
 border-radius:20px;
-text-decoration:none;
 color:white;
+text-decoration:none;
+font-size:12px;
 }
 
 .btn:hover{
@@ -91,25 +91,25 @@ background:#7b6249;
 
 <body>
 
-<div class="title">📈 今話題の本</div>
+<div class="title">📈 今売れている本</div>
 
-<div class="rank-list" id="ranking"></div>
+<div class="grid" id="books"></div>
 
 <script>
 
-const url="https://www.googleapis.com/books/v1/volumes?q=subject:fiction&langRestrict=ja&orderBy=relevance&maxResults=10"
+const APP_ID="8c682462-b116-430e-a3ef-7da6a88ac3f8"
+
+const url=`https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404?applicationId=${APP_ID}&sort=sales&size=10`
 
 fetch(url)
 .then(res=>res.json())
 .then(data=>{
 
-const container=document.getElementById("ranking")
+const container=document.getElementById("books")
 
-data.items.forEach((item,i)=>{
+data.Items.forEach((item,i)=>{
 
-const book=item.volumeInfo
-
-const img=book.imageLinks?.thumbnail || ""
+const book=item.Item
 
 const div=document.createElement("div")
 div.className="book"
@@ -118,13 +118,13 @@ div.innerHTML=`
 
 <div class="rank">${i+1}位</div>
 
-<img src="${img}">
+<img src="${book.largeImageUrl}">
 
-<div class="book-title">${book.title}</div>
+<div class="name">${book.title}</div>
 
-<div class="author">${book.authors ? book.authors.join(", ") : ""}</div>
+<div class="author">${book.author}</div>
 
-<a class="btn" href="${item.volumeInfo.infoLink}" target="_blank">
+<a class="btn" href="${book.itemUrl}" target="_blank">
 詳細
 </a>
 
